@@ -1,3 +1,4 @@
+
 .weather-content {
     display: flex;
     flex-direction: column;
@@ -5,32 +6,41 @@
     justify-content: center;
     height: 100vh;
     font-family: 'Roboto', sans-serif;
-    transition: background 0.5s ease; 
+    transition: background 0.5s ease;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
 body {
     background-color: #ecebec;
+    margin: 0;
+    overflow: hidden; 
 }
 
 /* Warm weather styles */
 .weather-content.warm {
-    background: linear-gradient(135deg, #ffb143, #fe531f); 
+    background: linear-gradient(135deg, #ffb143, #fe531f);
 }
 
 /* Cold weather styles */
 .weather-content.cold {
-    background: linear-gradient(135deg, #cadce8, #4153f8); 
+    background: linear-gradient(135deg, #cadce8, #4153f8);
 }
+
 
 .search-box {
     margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .search-bar {
     padding: 15px;
     border: none;
     border-radius: 30px;
-    width: 300px; /* Default width for desktop */
+    width: 90%;
     font-size: 16px;
     outline: none;
     transition: 0.3s ease-in-out;
@@ -41,22 +51,29 @@ body {
 }
 
 .search-bar:focus {
-    width: 350px;
+    width: 95%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Weather info styles */
-.location {
-    font-size: 28px;
+.location, .date, .temp, .weather, .time {
     color: #fff;
     text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.time {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.location {
+    font-size: 22px;
     margin-bottom: 10px;
 }
 
 .date {
-    font-size: 18px;
-    color: #f0f0f0;
-    text-align: center;
+    font-size: 14px;
     margin-bottom: 30px;
 }
 
@@ -65,36 +82,138 @@ body {
     flex-direction: column;
     align-items: center;
     background: rgba(255, 255, 255, 0.2);
-    padding: 30px;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 .temp {
-    font-size: 56px;
-    color: #fff;
+    font-size: 48px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
 .weather {
-    font-size: 24px;
-    color: #fff;
+    font-size: 18px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-/* Responsive styles */
-@media screen and (max-width: 768px) {
-    /* Tablet styles */
-    .search-bar {
-        width: 90%; /* Make it more fluid on tablets */
-        font-size: 14px;
-    }
+/* Cloud animation for all devices */
+.cloud {
+    position: absolute;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.2) 100%);
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(5px);
+    animation: jumpAnimation 4s ease-in-out infinite alternate;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); 
+}
 
-    .search-bar:focus {
-        width: 95%; /* Increase focus width */
+/* Make clouds "fluffier" by adding extra clouds with varying sizes */
+.fluffy {
+    position: absolute;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 0.3) 100%);
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(8px); /* More blur for extra fluffiness */
+    animation: jumpAnimation 3s ease-in-out infinite alternate;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); /* Enhanced shadow */
+}
+
+/* Rain styles */
+.rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.drop {
+    position: absolute;
+    background: #ffffffcc;
+    width: 1px;
+    height: 10px;
+    bottom: 100%;
+    animation: rain linear infinite;
+}
+
+/* Sun styles */
+.sun {
+    position: absolute;
+    bottom: 80%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #ffef3a, #ff8c00);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.7), 0 0 50px rgba(255, 140, 0, 0.5);
+    animation: spin 10s linear infinite;
+}
+
+/* Night time styles */
+.weather-content.night {
+    background: rgb(0, 0, 37);
+    color: white;
+    position: relative; 
+}
+
+/* stars styles  */
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1; /* Ensure stars are behind other content */
+}
+
+.star {
+    position: absolute;
+    width: 2px; /* Size of the star */
+    height: 2px; /* Size of the star */
+    background-color: white; /* Star color */
+    border-radius: 50%; /* Make the star circular */
+    box-shadow: 0 0 5px white; /* Glow effect */
+    animation: twinkle ease-in-out infinite; /* Use animation for twinkling effect */
+}
+
+/* Animations */
+@keyframes rain {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
+}
+
+@keyframes jumpAnimation {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-10px); }
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, 50%) rotate(0deg); }
+    100% { transform: translate(-50%, 50%) rotate(360deg); }
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.2; 
+    }
+    50% {
+        opacity: 1; 
+    }
+}
+/* 
+Tablet styles
+@media screen and (min-width: 768px) {
+    .search-bar {
+        width: 300px;
+        font-size: 16px;
     }
 
     .location {
@@ -106,189 +225,17 @@ body {
     }
 
     .temp {
-        font-size: 48px;
+        font-size: 56px;
     }
 
     .weather {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .weather-box {
-        padding: 20px; /* Reduce padding for smaller screens */
-        border-radius: 10px; /* Slightly adjust border radius */
+        padding: 30px;
+        border-radius: 15px;
     }
-}
+} */
 
-@media screen and (max-width: 480px) {
-    /* Mobile styles */
-    .search-bar {
-        width: 90%; /* Fluid width for mobile */
-        font-size: 14px;
-    }
 
-    .search-bar:focus {
-        width: 95%; /* Focus width for mobile */
-    }
-
-    .location {
-        font-size: 20px; /* Slightly smaller */
-    }
-
-    .date {
-        font-size: 14px;
-    }
-
-    .weather-box {
-        padding: 15px; /* Further reduce padding */
-        border-radius: 8px; /* More rounding for mobile */
-    }
-
-    .temp {
-        font-size: 40px; /* Smaller temperature font */
-    }
-
-    .weather {
-        font-size: 18px; /* Smaller weather font */
-    }
-}
-
-@keyframes rain {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(100vh);
-    }
-}
-
-.rain {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none; /* Allows clicks through the rain */
-}
-
-.drop {
-    position: absolute;
-    background: #ffffffcc; /* White rain drops */
-    width: 2px;
-    height: 20px;
-    bottom: 100%; /* Start above the viewport */
-    animation: rain linear infinite;
-}
-
-@media (max-width: 768px) {
-    .drop {
-        width: 1px; /* Smaller drops on tablets */
-        height: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .drop {
-        width: 0.5px; /* Even smaller drops on mobile */
-        height: 10px;
-    }
-}
-
-/* Cloud styles */
-.cloud {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.8); /* Slight transparency for a softer look */
-    border-radius: 50%;
-    opacity: 0.8;
-    animation: jumpAnimation 2s ease-in-out infinite alternate;
-    filter: blur(2px); /* Add a slight blur for softness */
-}
-
-/* Improved cloud shape */
-.cloud::before,
-.cloud::after {
-    content: '';
-    position: absolute;
-    background: inherit;
-    border-radius: 50%;
-}
-
-.cloud::before {
-    width: 60%; /* Adjust as needed */
-    height: 60%; /* Adjust as needed */
-    top: -20%; /* Raise it a bit */
-    left: 10%; /* Center it */
-}
-
-.cloud::after {
-    width: 60%; /* Adjust as needed */
-    height: 60%; /* Adjust as needed */
-    top: -20%; /* Raise it a bit */
-    right: 10%; /* Center it */
-}
-
-/* Cloud jumping animation */
-@keyframes jumpAnimation {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-10px); /* Adjust this value for how high you want the clouds to jump */
-    }
-}
-
-/* Sun styles */
-.sun {
-    position: absolute;
-    bottom: 86%; /* Position the sun closer to the center */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, 50%); /* Adjust the transform to center the sun */
-    width: 120px; /* Fixed width for desktop */
-    height: 120px; /* Fixed height for desktop */
-    background: radial-gradient(circle, #ffef3a, #ff8c00); /* Bright yellow to orange gradient */
-    border-radius: 50%; /* Circular shape */
-    box-shadow: 0 0 20px rgba(255, 255, 0, 0.7), 0 0 50px rgba(255, 140, 0, 0.5); /* Glowing effect */
-    animation: spin 10s linear infinite; /* Add a spinning effect */
-}
-
-@keyframes spin {
-    0% {
-        transform: translate(-50%, 50%) rotate(0deg); /* Start from original position */
-    }
-    100% {
-        transform: translate(-50%, 50%) rotate(360deg); /* Complete rotation */
-    }
-}
-
-/* Optional: Sunrays around the sun */
-.sun::before,
-.sun::after {
-    content: '';
-    position: absolute;
-    width: 130px; /* Width of the rays */
-    height: 130px; /* Height of the rays */
-    background: inherit; /* Inherit the background */
-    border-radius: 50%; /* Circular shape */
-    opacity: 0.3; /* Make the rays more subtle */
-    z-index: -1; /* Position behind the sun */
-}
-
-.sun::before {
-    animation: pulse 2s infinite; /* Pulsing animation for rays */
-}
-
-.sun::after {
-    animation: pulse 2s infinite 1s; /* Stagger the ray's animation */
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1); /* Slightly enlarge the rays */
-    }
-    100% {
-        transform: scale(1);
-    }
-}

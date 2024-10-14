@@ -17,7 +17,6 @@ function Weather() {
             .then(result => {
                 setWeather(result);
                 setQuery('');
-                // console.log(result);
             });
         }
     };
@@ -31,62 +30,66 @@ function Weather() {
         let date = d.getDate();
         let month = months[d.getMonth()];
         let year = d.getFullYear();
-
+        
         return `${day} ${date} ${month} ${year}`; 
     };
 
-    // Function to create random rain drops
-    const createRainDrops = () => {
-        const drops = [];
-        for (let i = 0; i < 100; i++) {
-            drops.push(
+    // Function to format the local time based on the timezone offset
+    const getLocalTime = () => {
+        if (weather.timezone) {
+            const utcTime = new Date().getTime();
+            const localTime = new Date(utcTime + weather.timezone * 1000);
+            return localTime;
+        }
+        return null;
+    };
+
+    // Function to create random stars
+    const createStars = (count) => {
+        const stars = [];
+        for (let i = 0; i < count; i++) {
+            stars.push(
                 <div
                     key={i}
-                    className="drop"
+                    className="star"
                     style={{
-                        left: `${Math.random() * 100}vw`, // Random position from 0 to 100vw
-                        animationDuration: `${Math.random() * 0.5 + 0.5}s`, // Random speed for drops
-                        animationDelay: `${Math.random() * 2}s` // Random delay for staggered effect
+                        left: `${Math.random() * 100}vw`,
+                        top: `${Math.random() * 100}vh`,
+                        animationDuration: `${Math.random() * 1 + 1}s`,
+                        opacity: Math.random()
                     }}
                 />
             );
         }
-        return drops;
+        return stars;
     };
 
-    // Function to create random clouds
-const createClouds = () => {
-    const clouds = [];
-    const cloudCount = 10; // Increase the number of clouds for more coverage
-    for (let i = 0; i < cloudCount; i++) {
-        clouds.push(
-            <div
-                key={i}
-                className="cloud"
-                style={{
-                    width: `${Math.random() * 150 + 50}px`, // Random width between 50px and 200px
-                    height: `${Math.random() * 60 + 30}px`, // Random height between 30px and 90px
-                    left: `${Math.random() * 100}vw`, // Random position from 0 to 100vw
-                    top: `${Math.random() * 20 + 10}vh`, // Random height from 10% to 30% of viewport height
-                }}
-            />
-        );
-    }
-    return clouds;
-};
-
-
-    // Determine the background class based on temperature
+    // Determine the background class based on the local time
     const getBackgroundClass = () => {
-        if (weather.main) {
-            const temperature = weather.main.temp;
-            if (temperature < 15) {
-                return 'cold'; // Cold background
+        const localTime = getLocalTime();
+        if (localTime) {
+            const hours = localTime.getUTCHours();
+
+            if (hours >= 6 && hours < 18) {
+                if (weather.main) {
+                    const temperature = weather.main.temp;
+                    return temperature < 16 ? 'cold' : 'warm';
+                }
+                return 'day'; // Default to day background if no weather data
             } else {
-                return 'warm'; // Warm background
+                return 'night'; // Night background with stars
             }
         }
         return '';
+    };
+
+    const isNighttime = () => {
+        const localTime = getLocalTime();
+        if (localTime) {
+            const hours = localTime.getUTCHours();
+            return hours < 6 || hours >= 18; // Nighttime condition
+        }
+        return false;
     };
 
     return (
@@ -102,7 +105,7 @@ const createClouds = () => {
                 />
             </div>
 
-            {(typeof weather.main != "undefined") ? (
+            {(typeof weather.main !== "undefined") ? (
                 <div>
                     <div>
                         <div className="location">
@@ -112,6 +115,10 @@ const createClouds = () => {
                         <div className="date">
                             {dateBuilder(new Date())}
                         </div>
+                    </div>
+
+                    <div className="time">
+                        {getLocalTime()?.toLocaleTimeString()} 
                     </div>
 
                     <div className="weather-box">
@@ -126,27 +133,68 @@ const createClouds = () => {
                 </div>
             ) : ('')}
 
-             {/* Render sun animation if it's sunny */}
-             {weather.weather && weather.weather[0].main.toLowerCase() === 'clear' && (
-                <div className="sun" />
+            {/* Render stars animation if it's nighttime */}
+            {isNighttime() && (
+                <div className="stars">
+                    {createStars(100)}
+                </div>
             )}
 
-             {/* Render rain animation if it's raining */}
-             {weather.weather && weather.weather[0].main.toLowerCase() === 'rain' && (
+            {/* Render clouds if the weather indicates so */}
+            {weather.weather && weather.weather[0].main.toLowerCase() === 'clouds' && (
+                <div className="clouds">
+                    {createClouds(10)} 
+                </div>
+            )}
+
+            {/* Render rain if the weather indicates so */}
+            {weather.weather && weather.weather[0].main.toLowerCase() === 'rain' && (
                 <div className="rain">
                     {createRainDrops()}
                 </div>
             )}
-
-            {/* Render cloud animation if it's cloudy */}
-            {weather.weather && weather.weather[0].main.toLowerCase() === 'clouds' && (
-                <div className="clouds">
-                    {createClouds()}
-                </div>
-            )}
         </div>
-
-        
     );
 }
+
+// Function to create random rain drops
+const createRainDrops = () => {
+    const drops = [];
+    for (let i = 0; i < 100; i++) {
+        drops.push(
+            <div
+                key={i}
+                className="drop"
+                style={{
+                    left: `${Math.random() * 100}vw`, // Random position from 0 to 100vw
+                    animationDuration: `${Math.random() * 0.5 + 0.5}s`, // Random speed for drops
+                    animationDelay: `${Math.random() * 2}s` // Random delay for staggered effect
+                }}
+            />
+        );
+    }
+    return drops;
+};
+
+// Function to create random clouds
+const createClouds = (count) => {
+    const clouds = [];
+    for (let i = 0; i < count; i++) {
+        clouds.push(
+            <div
+                key={i}
+                className="cloud"
+                style={{
+                    width: '100px', // Fixed width for clouds
+                    height: '50px', // Fixed height for clouds
+                    left: `${Math.random() * 100}vw`, // Random position from 0 to 100vw
+                    top: `${Math.random() * 20 + 10}vh`, // Random height from 10% to 30% of viewport height
+                    filter: 'blur(5px)', // Increased blur for softness
+                }} 
+            />
+        );
+    }
+    return clouds;
+};
+
 export default Weather;

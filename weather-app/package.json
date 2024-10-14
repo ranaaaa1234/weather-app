@@ -24,5 +24,12 @@
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.9.0",
     "vite": "^5.4.8"
-  }
+  },
+  "resolutions": {
+  "cookie": "^0.7.6",
+  "base64-url": "^3.0.0",
+  "csrf-tokens": "^2.0.0",
+  "uid-safe": "^2.1.5"
+}
+
 }
