@@ -31,7 +31,7 @@ body {
 
 .search-box {
     margin-bottom: 20px;
-    width: 100%;
+    width: 400px;
     display: flex;
     justify-content: center;
 }
@@ -43,7 +43,6 @@ body {
     width: 90%;
     font-size: 16px;
     outline: none;
-    transition: 0.3s ease-in-out;
 }
 
 .search-bar::placeholder {
@@ -51,7 +50,6 @@ body {
 }
 
 .search-bar:focus {
-    width: 95%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -208,34 +206,12 @@ body {
         opacity: 1; 
     }
 }
-/* 
-Tablet styles
-@media screen and (min-width: 768px) {
+
+@media screen and (max-width: 390px) {
     .search-bar {
-        width: 300px;
+        width: 250px;
         font-size: 16px;
     }
-
-    .location {
-        font-size: 24px;
-    }
-
-    .date {
-        font-size: 16px;
-    }
-
-    .temp {
-        font-size: 56px;
-    }
-
-    .weather {
-        font-size: 24px;
-    }
-
-    .weather-box {
-        padding: 30px;
-        border-radius: 15px;
-    }
-} */
+} 
 
 
